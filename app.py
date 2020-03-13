@@ -1,5 +1,6 @@
 __author__ = "Mehdi Abdullahi"
 
+from _md5 import md5
 from functools import wraps
 from flask import Flask, jsonify, request
 from flask_jwt_extended import (
@@ -44,29 +45,39 @@ def login():
 
 @app.route('/signup', methods=['POST'])
 def signup():
-    user = User.__init__()
-    DB.add(user)
+    pword = request.json('password')
+    confirm = request.json('repeat_password')
+    if pword == confirm:
+        User().add(request.json)
 
 
-@app.route('/edit_pro', methods=['GET', 'POST'])
-def edit():
-    # User.update()
-    DB.update()
+@app.route('/user/<id>', methods=['PUT'])
+def edit(id):
+    User.update(id, request.json)
 
 
-@app.route('/delete', mehtods=['GET', 'POST'])
-def delete():
-    # User.__delete__()
-    DB.remove()
+@app.route('/user/<id>', mehtods=['DELETE'])
+@admin
+def delete(id):
+    User.delete(id)
 
 
-@app.route('/ch_pass', methods=['GET', 'POST'])
-def chpass():
-    # User.chpass()
-    DB.ch_pass()
+@app.route('/user/<str:user_id>/password', methods=['PATCH'])
+@admin
+def chpass(user_id):
+    current = request.json('current_password')
+    new = request.json('new_password')
+    repeat = request.json('repeat_password')
+    user = User.fetch(user_id)
+    if user is None:
+        return jsonify({'error': 'user not found'})
+    elif new == repeat:
+        return jsonify({'data': User().chpass(id, new)})
+    elif new != repeat:
+        return jsonify({'error': 'password confirmation failed.'})
 
 
-@app.route('/protected', methods=['GET'])
+@app.route('/user/<id>', methods=['GET'])
 @admin
 def protected():
     return jsonify(secret_message="sorry!")

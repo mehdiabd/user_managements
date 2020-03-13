@@ -12,7 +12,7 @@ except:
 class DB:
 	def __init__(self, collection):
 		self.db = con.user
-		self.col = self.db.collection
+		self.col = self.db[collection]
 
 	def add(self, user):
 		self.col.insert_one(user)
@@ -21,10 +21,7 @@ class DB:
 		return self.col.find_one({"_id": id})
 
 	def update(self, id, inf):
-		self.col.update_one({{'_id': id}, {'$set': inf}})
-
-	def ch_pass(self, id, inf):
-		self.col.update_one({{'_id': id}, {'$set': inf}})
+		return self.col.update_one({{'_id': id}, {'$set': inf}}).modified_count
 
 	def remove(self, u):
 		self.col.delete_one({'username': u})
