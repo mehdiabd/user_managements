@@ -7,6 +7,7 @@ from flask_jwt_extended import (
     get_jwt_claims
 )
 from user import User
+from db import DB
 
 app = Flask(__name__)
 
@@ -43,22 +44,26 @@ def login():
 
 @app.route('/signup', methods=['POST'])
 def signup():
-    User.__init__()
+    user = User.__init__()
+    DB.add(user)
 
 
 @app.route('/edit_pro', methods=['GET', 'POST'])
 def edit():
-    User.update()
+    # User.update()
+    DB.update()
 
 
 @app.route('/delete', mehtods=['GET', 'POST'])
 def delete():
-    User.__delete__()
+    # User.__delete__()
+    DB.remove()
 
 
 @app.route('/ch_pass', methods=['GET', 'POST'])
 def chpass():
-    User.chpass()
+    # User.chpass()
+    DB.ch_pass()
 
 
 @app.route('/protected', methods=['GET'])

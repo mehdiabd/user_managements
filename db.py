@@ -8,34 +8,26 @@ try:
 except:
 	print("Couldn't connect")
 
-db = con.user
 
-col = db.account
+class DB:
+	def __init__(self, collection):
+		self.db = con.user
+		self.col = self.db.collection
 
-user1 = {
-		"name": "Mr.Mehdi",
-		"eid": 97,
-		"location": "Tehran"
-		}
+	def add(self, user):
+		self.col.insert_one(user)
 
-user2 = {
-		"name": "Mr.Abdullah",
-		"eid": 76,
-		"location": "Guilan"
-		}
+	def fetch(self, id):
+		return self.col.find_one({"_id": id})
 
-user3 = {
-		"name": "Mr.Hashem",
-		"eid": 18,
-		"location": "Ardebil"
-		}
+	def update(self, id, inf):
+		self.col.update_one({{'_id': id}, {'$set': inf}})
 
-q1 = col.insert_one(user1)
-q2 = col.insert_one(user2)
-q3 = col.insert_one(user3)
+	def ch_pass(self, id, inf):
+		self.col.update_one({{'_id': id}, {'$set': inf}})
 
-print("Data inserted: ", q1, " , ", q2, " , ", q3)
+	def remove(self, u):
+		self.col.delete_one({'username': u})
 
-cursor = col.find()
-for rec in cursor:
-	print(rec)
+	def find(self, u):
+		self.col.find_one({'username': u})
