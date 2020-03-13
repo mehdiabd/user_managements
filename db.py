@@ -1,6 +1,7 @@
 __author__ = "Mehdi Abdullahi"
 
 from pymongo import MongoClient
+from bson import ObjectId
 
 try:
 	con = MongoClient()
@@ -14,17 +15,17 @@ class DB:
 		self.db = con.user
 		self.col = self.db[collection]
 
-	def add(self, user):
-		self.col.insert_one(user)
+	def add(self, data):
+		return self.col.insert_one(data).inserted_id
 
 	def fetch(self, id):
-		return self.col.find_one({"_id": id})
+		return self.col.find_one({"_id": ObjectId(id)})
 
 	def update(self, id, inf):
-		return self.col.update_one({{'_id': id}, {'$set': inf}}).modified_count
+		return self.col.update_one({{'_id': ObjectId(id)}, {'$set': inf}}).modified_count
 
-	def remove(self, u):
-		self.col.delete_one({'username': u})
+	def remove(self, id, inf):
+		return self.col.delete_one({'_id': ObjectId(id), 'username': inf})
 
-	def find(self, u):
-		self.col.find_one({'username': u})
+	def find(self, data):
+		return self.col.find_many(data)

@@ -1,6 +1,5 @@
 __author__ = "Mehdi Abdullahi"
 
-from _md5 import md5
 from functools import wraps
 from flask import Flask, jsonify, request
 from flask_jwt_extended import (
@@ -8,7 +7,6 @@ from flask_jwt_extended import (
     get_jwt_claims
 )
 from user import User
-from db import DB
 
 app = Flask(__name__)
 
@@ -45,10 +43,10 @@ def login():
 
 @app.route('/signup', methods=['POST'])
 def signup():
-    pword = request.json('password')
-    confirm = request.json('repeat_password')
+    pword = request.json['password']
+    confirm = request.json['repeat_password']
     if pword == confirm:
-        User().add(request.json)
+        return jsonify({'data': str(User().add(request.json))})
 
 
 @app.route('/user/<id>', methods=['PUT'])
@@ -56,13 +54,13 @@ def edit(id):
     User.update(id, request.json)
 
 
-@app.route('/user/<id>', mehtods=['DELETE'])
+@app.route('/user/<id>', methods=['DELETE'])
 @admin
 def delete(id):
     User.delete(id)
 
 
-@app.route('/user/<str:user_id>/password', methods=['PATCH'])
+@app.route('/user/<user_id>/password', methods=['PATCH'])
 @admin
 def chpass(user_id):
     current = request.json('current_password')
@@ -77,7 +75,7 @@ def chpass(user_id):
         return jsonify({'error': 'password confirmation failed.'})
 
 
-@app.route('/user/<id>', methods=['GET'])
+@app.route('/protected', methods=['GET'])
 @admin
 def protected():
     return jsonify(secret_message="sorry!")

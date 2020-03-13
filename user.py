@@ -9,13 +9,13 @@ class User:
         self.pword = ''
 
     def add(self, data):
-        DB('user').add(data)
+        return DB('user').add(data)
 
     def delete(self, id):
         return self.delete({'_id': id})
 
-    def update(self, u):
-        self.uname = u
+    def update(self, id, inf):
+        return DB('user').update(id, inf)
 
     def chpass(self, id, p):
         return DB('user').update(id, {"password": p})
@@ -23,3 +23,6 @@ class User:
     @staticmethod
     def fetch(id):
         return DB('user').fetch(id)
+
+    def find(self, data):
+        return DB('user').find(data)
